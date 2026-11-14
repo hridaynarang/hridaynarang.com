@@ -82,6 +82,8 @@ export default function Home() {
               <A href={profile.github}>GitHub</A>
               <span className="mx-2 text-faint">/</span>
               <A href={profile.linkedin}>LinkedIn</A>
+              <span className="mx-2 text-faint">/</span>
+              <A href={profile.x}>X</A>
             </p>
           </div>
           <p className="text-muted">{profile.tagline}</p>

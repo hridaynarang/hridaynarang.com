@@ -7,6 +7,7 @@ export const profile = {
   ],
   linkedin: "https://www.linkedin.com/in/hriday-narang/",
   github: "https://github.com/hridaynarang",
+  x: "https://x.com/hnarang2008",
 };
 
 export const links = {
