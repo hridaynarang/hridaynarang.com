@@ -12,10 +12,10 @@ const BAYER = [
   [15, 7, 13, 5],
 ];
 
-// Hovering develops the photo slowly; leaving puts the dither back quicker,
-// since that's tidying up rather than the thing you came to see.
+// Developing the photo and putting the dither back take the same time, so
+// leaving runs the hover in reverse instead of snapping shut.
 const IN_MS = 2000;
-const OUT_MS = 1000;
+const OUT_MS = 2000;
 
 const ease = (p: number) => 0.5 - Math.cos(Math.PI * p) / 2;
 
