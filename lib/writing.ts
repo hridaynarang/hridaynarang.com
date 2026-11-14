@@ -11,7 +11,7 @@ export const posts: Post[] = [
   {
     slug: "the-future-of-enterprise-physical-ai",
     title: "The Future of Enterprise Physical AI",
-    date: "2026-11-13",
+    date: "2026-11-14",
     paragraphs: [
       "As AI moves from the digital world into the physical one, enterprises will have to decide what they actually need to own.",
       "In the digital world, AI runs on general-purpose hardware: the same GPUs and servers can run any model, so the only real choice an enterprise makes is about the intelligence itself. Consumers are content with general models like ChatGPT or Claude, but enterprises have learned otherwise. Frontier models are remarkably capable, but general capability rarely translates to enterprise value on its own. The companies seeing real returns post-train general models on their own data, workflows, and tacit knowledge, and increasingly they want to own their intelligence rather than rent it.",
