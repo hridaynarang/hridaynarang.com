@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Frame } from "@/components/frame";
 import { profile } from "@/lib/content";
@@ -45,14 +44,7 @@ export default async function PostPage({
       <article
         className={`${serif.className} flex flex-1 flex-col px-6 py-10 sm:px-10`}
       >
-        <Link
-          href="/writing"
-          className="self-start text-[15px] text-muted transition-colors hover:text-fg"
-        >
-          &larr; All writing
-        </Link>
-
-        <header className="mt-6 text-center">
+        <header className="text-center">
           <h1 className="text-[30px] leading-tight font-semibold tracking-tight text-balance">
             {post.title}
           </h1>
