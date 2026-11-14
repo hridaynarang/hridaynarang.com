@@ -21,7 +21,7 @@ export default function Writing() {
                 href={`/writing/${post.slug}`}
                 className="group flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-4"
               >
-                <span className="text-lg underline decoration-transparent underline-offset-4 transition-colors group-hover:decoration-fg/40">
+                <span className="text-lg underline decoration-faint/50 underline-offset-4 transition-colors group-hover:decoration-fg">
                   {post.title}
                 </span>
                 <time
