@@ -1,63 +1,84 @@
 # hridaynarang.com
 
-A personal site that is one sheet of crumpled paper, one screen, no scrolling.
+A personal site in two tabs: **About**, a single framed page, and **Writing**,
+essays set for reading. Next.js 16 (App Router, Turbopack) and Tailwind v4.
 
 ```bash
 npm install
-npm run dev
+npm run dev     # http://localhost:3000
+npm run build   # every route is prerendered static
 ```
 
-## How the paper works
+## Layout
 
-The paper isn't a picture of paper — it's lit in real time.
+Both tabs sit inside the same ruled rectangle, **`components/frame.tsx`**: side
+rails that run the full height of the window, an inset box with a registration
+cross at every corner where two lines meet, the ABOUT / WRITING tab strip on
+top, and the Atlanta clock in the footer. Every route renders inside `Frame`,
+so the lines never move between pages.
 
-**`public/paper-normal.jpg`** is a scan of real crumpled paper ([ambientCG
-Paper003](https://ambientcg.com/view?id=Paper003), CC0 public domain). It stores
-surface *normals* rather than baked-in shading, which is what makes the light a
-live variable.
+The tab labels always reserve space for their brackets and only hide them on
+the inactive tab, so switching tabs doesn't shift either label.
 
-**`components/crumple-light.tsx`** runs a WebGL2 fragment shader over the whole
-viewport, doing the Lambert term per pixel against a point light that follows the
-cursor (or the gyroscope on a phone). It adds a cheap ambient-occlusion term so
-creases stay dark regardless of where the light is — without that, paper reads as
-plastic. The texture is sampled in page space and lit in viewport space, so the
-sheet scrolls under a fixed lamp.
+## About
 
-This was originally generated procedurally, with a Voronoi cell structure
-approximating the crease network. It's a dead end worth recording: real crumpled
-paper is **faceted** — flat planes meeting at sharp straight creases — and
-Voronoi `f1` height is *distance to a seed*, so every cell comes out as a cone
-and bulges. It read as molded plastic. SVG's `feTurbulence` is worse: it only
-ever makes rounded organic ridges, which look like stucco or leather at any
-setting. A photograph of the real thing is both more convincing and smaller than
-the generated normal map it replaced.
+**`app/page.tsx`**. The header has the portrait, name, links, and the email
+addresses spelled out as "[at]" / "[dot]" rather than linked, so scrapers
+don't harvest them. Below it are four paragraphs set large. Each opens in
+black and trails off into grey, so skimming down the left edge still gives the
+gist.
 
-**`components/uncrumple.tsx`** runs the whole content block through an SVG
-displacement map on load, falling from scale 46 to 0 while the shader's crease
-depth relaxes on the same easing curve and duration. The writing is *on* the
-paper, so it has to deform with it. The filter is attached on mount, not
-server-rendered — with JS off you get flat readable text rather than a page
-frozen mid-crumple — and it's removed entirely when the animation ends, since a
-displacement map at scale 0 still costs a full filter pass on every repaint.
+**`components/dither-portrait.tsx`** draws the photo as a 1-bit Bayer dither
+on a canvas, so the only image on the page uses the same two colours as
+everything else. On hover it develops into the greyscale photo over two
+seconds, with grey levels and resolution climbing together frame by frame, and
+it runs back at the same speed when the cursor leaves. Reduced-motion users get
+the end state immediately.
+
+**`components/ink-mark.tsx`** sets company logos into the sentences that name
+them. The originals in `public/logos/` come in incompatible treatments, so each
+is reduced to a silhouette (the `-ink` files) and drawn as a CSS mask filled
+with `currentColor`, which makes the logo the same colour as its link.
+
+## Writing
+
+**`app/writing/page.tsx`** lists the posts. **`app/writing/[slug]/page.tsx`**
+renders one post, statically generated per slug, with its own title and
+link-preview metadata. Inside the frame, Writing switches to **Newsreader**
+(`app/writing/serif.ts`), a serif designed for reading on screen. The page
+headings stay in Geist to match About.
+
+### Adding a post
+
+Posts live in **`lib/writing.ts`**, newest first:
+
+```ts
+{
+  slug: "url-segment",
+  title: "Title",
+  date: "2026-11-14",          // ISO; rendered "November 14, 2026" in UTC
+  paragraphs: ["First…", "Second…"],
+}
+```
+
+The first paragraph doubles as the description in search results and link
+previews. Paragraphs are plain strings, so links or emphasis inside a post
+would need a richer format.
 
 ## Type
 
-Two voices, matching the two things on a real sheet:
-
-- **Caveat** — the name only. The signature.
-- **Courier Prime** — everything else. It's a typed note.
-- **Geist Mono** — one exception, the tagline under the name.
-
-Text carries `.ink`, which is `mix-blend-mode: multiply`, so creases run *through*
-the letters. The photo deliberately doesn't: ink soaks into paper, but a
-photograph is an object lying on top of it, so it gets a real drop shadow instead.
+- **Geist**: everything on About, plus headings on Writing.
+- **Geist Mono**: the tab strip and footer on both tabs. Labels only.
+- **Newsreader**: post titles and body text.
 
 ## Content
 
-All of it is in **`lib/content.ts`** — roles, dates, links, and the pen notes.
-Nothing to hunt for in the markup.
+Profile details and outbound links are in **`lib/content.ts`**. Posts are in
+**`lib/writing.ts`**. The About copy is written inline in `app/page.tsx`,
+alongside comments explaining why each line is phrased the way it is.
 
 ## Gotcha
 
-Turbopack repeatedly served **stale CSS** after edits to `globals.css` during
-development. If a change doesn't show up, `rm -rf .next` and restart.
+This is Next.js 16, which changes APIs your memory of Next may not cover
+(for example, route `params` is a Promise). The bundled docs in
+`node_modules/next/dist/docs/` are the reference. See `AGENTS.md`.
